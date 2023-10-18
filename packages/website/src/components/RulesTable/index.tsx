@@ -245,6 +245,7 @@ const neutralFiltersState: FiltersState = {
 
 const selectSearch: HistorySelector<string> = history =>
   history.location.search;
+const selectHash: HistorySelector<string> = history => history.location.hash;
 const getServerSnapshot = (): string => '';
 
 function useRulesFilters(
@@ -252,6 +253,7 @@ function useRulesFilters(
 ): [FiltersState, (category: FilterCategory, mode: FilterMode) => void] {
   const history = useHistory();
   const search = useHistorySelector(selectSearch, getServerSnapshot);
+  const hash = useHistorySelector(selectHash, getServerSnapshot);
 
   const paramValue = new URLSearchParams(search).get(paramsKey) ?? '';
   // We can't compute this in selectSearch, because we need the snapshot to be
@@ -287,7 +289,7 @@ function useRulesFilters(
       searchParams.delete(paramsKey);
     }
 
-    history.replace({ search: searchParams.toString() });
+    history.replace({ hash, search: searchParams.toString() });
   };
 
   return [filtersState, changeFilter];
